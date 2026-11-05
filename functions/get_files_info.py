@@ -1,4 +1,5 @@
-from os.path import abspath, commonpath, isdir, join, normpath
+from os import listdir
+from os.path import abspath, commonpath, getsize, isdir, join, normpath
 
 
 def get_files_info(working_directory: str, directory: str = ".") -> str:
@@ -12,7 +13,12 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
         if not isdir(target_dir):
             return f'Error: "{directory}" is not a directory'
 
-        return f'Success: "{directory}" is within the working directory'
+        contents = [
+            f"- {content}: file_size={getsize(join(target_dir, content))} bytes, is_dir={isdir(join(target_dir, content))}"
+            for content in listdir(target_dir)
+        ]
+
+        return "\n".join(contents)
 
     except Exception as e:
         return f"Error: {e}"
