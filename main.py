@@ -1,6 +1,7 @@
 import argparse
 import os
 
+from prompts import system_prompt
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -23,6 +24,7 @@ def main() -> None:
     )
 
     messages = [
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": args.user_prompt},
     ]
 
