@@ -1,9 +1,12 @@
 import argparse
 import os
+from json import loads
 
-from prompts import system_prompt
 from dotenv import load_dotenv
 from openai import OpenAI
+
+from call_function import available_functions
+from prompts import system_prompt
 
 
 def main() -> None:
@@ -41,13 +44,20 @@ def generate_content(
     response = client.chat.completions.create(
         model="openrouter/free",
         messages=messages,
+        tools=available_functions,
     )
 
     if verbose:
         print(f"Prompt tokens: {response.usage.prompt_tokens}")
         print(f"Response tokens: {response.usage.completion_tokens}")
+
+    message = response.choices[0].message
+    if message.tool_calls:
+        for tool_call in message.tool_calls:
+            function_args = loads(tool_call.function.arguments or "{}")
+            print(f"Calling function: {tool_call.function.name}({function_args})")
     print("Response:")
-    print(response.choices[0].message.content)
+    print(message.content)
 
 
 if __name__ == "__main__":
