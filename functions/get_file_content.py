@@ -2,6 +2,24 @@ from os.path import abspath, commonpath, isfile, join, normpath
 
 from config import MAX_CHARS
 
+schema_get_file_content = {
+    "type": "function",
+    "function": {
+        "name": "get_file_content",
+        "description": "Gets the content of a file in a specified directory relative to the working directory. It truncates files that have more than 10,000 characters.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "File to get contents from, relative to the working directory",
+                },
+            },
+        },
+        "required": ["file_path"],
+    },
+}
+
 
 def get_file_content(working_directory: str, file_path: str) -> str:
     try:

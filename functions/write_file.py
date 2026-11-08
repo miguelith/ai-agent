@@ -1,6 +1,28 @@
 from os import makedirs
 from os.path import abspath, commonpath, dirname, isdir, join, normpath
 
+schema_write_file = {
+    "type": "function",
+    "function": {
+        "name": "write_file",
+        "description": "Overwrites the contents of a file relative to the working directory with a given content.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "File to overwrite, relative to the working directory",
+                },
+                "content": {
+                    "type": "string",
+                    "description": "Content to overwrite the file with",
+                },
+            },
+        },
+        "required": ["file_path", "content"],
+    },
+}
+
 
 def write_file(working_directory: str, file_path: str, content: str) -> str:
     try:

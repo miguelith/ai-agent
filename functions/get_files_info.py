@@ -15,6 +15,7 @@ schema_get_files_info = {
                 },
             },
         },
+        "required": ["directory"],
     },
 }
 
