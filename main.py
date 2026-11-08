@@ -1,6 +1,6 @@
 import argparse
 import os
-from json import loads
+from sys import exit
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -9,7 +9,7 @@ from call_function import available_functions, call_function
 from prompts import system_prompt
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(description="Chatbot")
     parser.add_argument("user_prompt", type=str, help="User prompt")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
@@ -34,12 +34,18 @@ def main() -> None:
     if args.verbose:
         print(f"User prompt: {args.user_prompt}\n")
 
-    generate_content(client, messages, args.verbose)
+    for _ in range(20):
+        result = generate_content(client, messages, args.verbose)
+        if result:
+            print(result)
+            exit(0)
+
+    exit(1)
 
 
 def generate_content(
     client: OpenAI, messages: list[dict[str, str]], verbose: bool
-) -> None:
+) -> str | None:
 
     response = client.chat.completions.create(
         model="openrouter/free",
@@ -47,18 +53,23 @@ def generate_content(
         tools=available_functions,
     )
 
+    message = response.choices[0].message
+    messages.append(message)
+
     if verbose:
         print(f"Prompt tokens: {response.usage.prompt_tokens}")
         print(f"Response tokens: {response.usage.completion_tokens}")
 
-    message = response.choices[0].message
     if message.tool_calls:
         for tool_call in message.tool_calls:
             result_message = call_function(tool_call, verbose)
+            messages.append(result_message)
             if verbose:
                 print(f"-> {result_message['content']}")
-    print("Response:")
-    print(message.content)
+        return None
+
+    message_content = ["Response:", message.content]
+    return "\n".join(message_content)
 
 
 if __name__ == "__main__":
