@@ -5,7 +5,7 @@ from json import loads
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from call_function import available_functions
+from call_function import available_functions, call_function
 from prompts import system_prompt
 
 
@@ -54,8 +54,9 @@ def generate_content(
     message = response.choices[0].message
     if message.tool_calls:
         for tool_call in message.tool_calls:
-            function_args = loads(tool_call.function.arguments or "{}")
-            print(f"Calling function: {tool_call.function.name}({function_args})")
+            result_message = call_function(tool_call, verbose)
+            if verbose:
+                print(f"-> {result_message['content']}")
     print("Response:")
     print(message.content)
 
