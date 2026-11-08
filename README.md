@@ -1,8 +1,8 @@
 # AI Agent
 
-A simple AI coding agent built with Python as part of Boot.dev's **Build an AI Agent** course.
+A simple AI coding agent built with Python and the OpenAI SDK as part of Boot.dev's **Build an AI Agent** course.
 
-The agent uses OpenRouter to interact with an LLM that can inspect, modify, and run Python files in the included `calculator/` project.
+The agent uses the OpenAI SDK to interact with an LLM through OpenRouter, allowing it to inspect, modify, and run Python files in the included `calculator/` project.
 
 ## Requirements
 
